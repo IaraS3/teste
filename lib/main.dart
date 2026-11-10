@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:teste/models/clima.dart';
+import 'package:teste/screens/stateful.dart';
+import 'package:teste/screens/ver_clima.dart';
 import 'package:teste/screens/widgets_conteudo.dart';
 import 'package:teste/screens/widgets_layout.dart';
-
+ 
 void main() {
   runApp(const MyApp());
 }
-
+ 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
@@ -17,33 +20,128 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
+ 
 class ListContents extends StatelessWidget {
-  const new({super.key});
-
+  final List<CatalogoItem> secoes = [
+    CatalogoItem(
+      titulo: 'Widgets de conteudo',
+      icone: Icons.text_fields,
+      descricao: 'Exemplos de Widgets de Conteudo feitos na aula 1',
+      destino: WidgetsConteudo(),
+    ),
+ 
+    CatalogoItem(
+      titulo: 'Widgets de Layout',
+      icone: Icons.view_agenda,
+      descricao: 'Exemplos de Widgets de Layout feitos na aula 2',
+      destino: WidgetsLayout(),
+    ),
+ 
+    CatalogoItem(
+      titulo: 'Clima de São Paulo',
+      icone: Icons.cloud,
+      descricao: 'Clique para ver o clima de São Paulo',
+      destino: VerClima(
+        clima: Clima(
+          cidade: 'São Paulo',
+          temperaturaAtual: 31,
+          temperaturaMinima: 24,
+          temperaturaMaxima: 33,
+          umidade: 65,
+          chanceChuva: 30,
+        ),
+      ),
+    ),
+ 
+    CatalogoItem(
+      titulo: 'Clima do Rio de Janeiro',
+      icone: Icons.wb_sunny,
+      descricao: 'Clique para ver o clima deo Rio de Janeiro',
+      destino: VerClima(
+        clima: Clima(
+          cidade: 'Rio de Janeiro',
+          temperaturaAtual: 33,
+          temperaturaMinima: 25,
+          temperaturaMaxima: 35,
+          umidade: 78,
+          chanceChuva: 40,
+        ),
+      ),
+    ),
+ 
+    CatalogoItem(
+      titulo: 'Ciclo de vida Stateful',
+      icone: Icons.sync,
+      descricao: 'Aprendendo o ciclo de vida de um Widget Stateful',
+      destino: StatefulPai(),
+    ),
+  ];
+  new({super.key});
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Home')),
-      body: Column(
+      body: GridView.count(
+        crossAxisCount: 2,
+        padding: EdgeInsets.all(16),
+        crossAxisSpacing: 16,
+        childAspectRatio: 0.85,
         children: [
-          ElevatedButton(
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => WidgetsConteudo()),
-            ),
-            child: Text('Widgets de Conteudo'),
-          ),
-
-          ElevatedButton(
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => WidgetsLayout()),
-            ),
-            child: Text('Widgets de Layout'),
-          ),
+          ...secoes
+              .map(
+                (item) => GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => item.destino),
+                  ),
+                  child: Card(
+                    elevation: 4,
+                    child: Padding(
+                      padding: EdgeInsets.all(12),
+                      child: Column(
+                        children: [
+                          Icon(item.icone, size: 48, color: Colors.blue),
+                          Text(
+                            item.titulo,
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            item.descricao,
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
         ],
       ),
     );
   }
+}
+ 
+class CatalogoItem {
+  final String titulo;
+  final IconData icone;
+  final String descricao;
+  final Widget destino;
+ 
+  CatalogoItem({
+    required this.titulo,
+    required this.icone,
+    required this.descricao,
+    required this.destino,
+  });
 }
