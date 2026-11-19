@@ -163,3 +163,5 @@ class CatalogoItem {
     required this.destino,
   });
 }
+
+
